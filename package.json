@@ -1,17 +1,38 @@
 {
+<<<<<<< HEAD
+  "name": "attentigo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+=======
   "name": "myfirstproject",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+>>>>>>> 8aa9535836333fafbd4079745c59a70b7b12e9ae
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< HEAD
+    "@radix-ui/react-slot": "^1.2.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "embla-carousel-react": "^8.6.0",
+    "lucide-react": "^0.523.0",
+    "next": "15.3.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "swiper": "^11.2.8",
+    "tailwind-merge": "^3.3.1"
+=======
     "next": "15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
+>>>>>>> 8aa9535836333fafbd4079745c59a70b7b12e9ae
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -19,11 +40,18 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+<<<<<<< HEAD
+    "eslint": "^9",
+    "eslint-config-next": "15.3.4",
+    "tailwindcss": "^4",
+    "tw-animate-css": "^1.3.4",
+=======
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.10",
+>>>>>>> 8aa9535836333fafbd4079745c59a70b7b12e9ae
     "typescript": "^5"
   }
 }
