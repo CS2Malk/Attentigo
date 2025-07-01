@@ -1,10 +1,8 @@
-import React from 'react'
-import HowToUse from '@/components/how-to-use'
+import React from "react";
+import HowToUse from "@/components/how-to-use";
 
 const HowToUsePage = () => {
-  return (
-    <HowToUse />
-  )
-}
+  return <HowToUse />;
+};
 
-export default HowToUsePage
+export default HowToUsePage;

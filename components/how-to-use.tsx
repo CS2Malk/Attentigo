@@ -13,7 +13,7 @@ export default function HowToUse() {
             <li key={step.number} className="flex items-start">
               <span
                 className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full font-bold mr-5 bg-${step.color}-500 text-white text-2xl shadow-md`}
-                style={{ minWidth: '2.5rem', minHeight: '2.5rem' }}
+                style={{ minWidth: "2.5rem", minHeight: "2.5rem" }}
               >
                 {step.number}
               </span>

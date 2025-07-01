@@ -6,11 +6,7 @@ interface Props {
   color?: string;
 }
 
-function DynamicIcon({
-  iconName,
-  size = 24,
-  color = "currentColor",
-}: Props) {
+function DynamicIcon({ iconName, size = 24, color = "currentColor" }: Props) {
   const IconComponent = Icons[iconName] as React.ElementType;
   if (!IconComponent) {
     // you could throw, warn, or return a default

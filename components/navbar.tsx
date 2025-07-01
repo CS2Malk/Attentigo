@@ -15,7 +15,7 @@ const Navbar = () => {
               {Title.title}
             </Link>
           </div>
-          
+
           {/* Desktop Nav */}
           <nav className="hidden md:flex space-x-8">
             {NavItems.map((item, index) => (
@@ -28,7 +28,7 @@ const Navbar = () => {
               </a>
             ))}
           </nav>
-          
+
           {/* Mobile Nav with Sheet */}
           <div className="flex md:hidden">
             <Sheet>

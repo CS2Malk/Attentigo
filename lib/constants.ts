@@ -75,11 +75,11 @@ export const Cards = [
     iconName: "Lock"
   },
   {
-    title: 'Check Student Attendance',
-    description: 'Easily check in and track attendance record with just a few clicks.',
-    iconBackgroundColor: 'bg-teal-600',
-    backgroundColor: 'from-teal-50 to-teal-100',
-    iconName: "SquareCheckBig"
+    title: 'Attendance Dashboard',
+    description: 'View all your attendance statistics and insights in a clear and concise dashboard.',
+    iconBackgroundColor: 'bg-red-600',
+    backgroundColor: 'from-red-50 to-red-100',
+    iconName: "Binoculars"
   }
 ]
 
@@ -116,3 +116,13 @@ export const HowToUseGuide = {
   tagline: "Fast. Secure. Effortless."
 }
 
+export const ContactPageConstants = {
+  heading: "Contact Us",
+  nameLabel: "Name",
+  namePlaceholder: "Your Name",
+  emailLabel: "Email",
+  emailPlaceholder: "you@email.com",
+  messageLabel: "Message",
+  messagePlaceholder: "How can we help you?",
+  buttonText: "Send Message",
+};
