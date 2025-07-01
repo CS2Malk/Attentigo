@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "npx lightningcss --version"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.14",
@@ -32,4 +33,5 @@
     "tw-animate-css": "^1.3.4",
     "typescript": "^5"
   }
+
 }
