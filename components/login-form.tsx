@@ -16,18 +16,16 @@ import {
 import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
-  name: z.string().min(2, { message: "Name is required" }),
   email: z.string().email({ message: "Enter a valid email address" }),
-  message: z.string().min(5, { message: "Message is too short" }),
+  password: z.string().min(8, { message: "Password must be at least 8 characters long." }),
 });
 
-export function ContactForm() {
+export function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
       email: "",
-      message: "",
+      password: "",
     },
   });
 
@@ -40,27 +38,10 @@ export function ContactForm() {
     <div className="flex justify-center items-center min-h-screen bg-transparent">
       <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-8 md:p-12">
         <h2 className="text-4xl font-bold text-center mb-8 text-green-600 drop-shadow-md">
-          Contact Us
+          Log In
         </h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-semibold text-lg text-black">Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Your Name"
-                      {...field}
-                      className="h-12"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="email"
@@ -81,17 +62,16 @@ export function ContactForm() {
             />
             <FormField
               control={form.control}
-              name="message"
+              name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold text-lg text-black">
-                    Message
-                  </FormLabel>
+                  <FormLabel className="font-semibold text-lg text-black">Password</FormLabel>
                   <FormControl>
-                    <textarea
-                      className="w-full min-h-[120px] rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
-                      placeholder="How can we help you?"
+                    <Input
+                      placeholder="Enter your password"
+                      type="password"
                       {...field}
+                      className="h-12 "
                     />
                   </FormControl>
                   <FormMessage />
@@ -103,7 +83,7 @@ export function ContactForm() {
                 type="submit"
                 className="w-48 h-12 text-lg bg-green-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition hover:cursor-pointer"
               >
-                Send Message
+                Log In
               </Button>
             </div>
           </form>
