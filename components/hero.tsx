@@ -1,6 +1,7 @@
 import React from "react";
 import { HeroSection } from "@/lib/constants";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const Hero = () => {
   return (
@@ -16,9 +17,9 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
 
           <Link href="/login" passHref>
-            <button className="bg-green-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors hover:cursor-pointer">
+            <Button className="bg-green-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors hover:cursor-pointer">
               {HeroSection.logIn}
-            </button>
+            </Button>
           </Link>
         </div>
       </div>
