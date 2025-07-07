@@ -5,7 +5,7 @@ import { MarkAttendanceConstants } from "@/lib/constants";
 const MarkAttendancePage = () => {
   const today = new Date().toLocaleDateString();
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col items-center justify-center py-20">
       <div className="bg-white/80 shadow-md rounded-3xl px-12 py-10 flex flex-col items-center gap-8 border">
         <h1 className="text-4xl sm:text-5xl font-extrabold mb-2 text-green-600">{ MarkAttendanceConstants.Mark }</h1>
         <div className="flex items-center gap-2 text-lg sm:text-xl text-gray-700 bg-green-50 px-4 py-2 rounded-full shadow-inner">

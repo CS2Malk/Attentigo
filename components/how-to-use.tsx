@@ -3,7 +3,7 @@ import { HowToUseGuide } from "@/lib/constants";
 
 export default function HowToUse() {
   return (
-    <section className="flex justify-center items-center min-h-screen bg-transparent">
+    <section className="flex justify-center items-center bg-transparent h-full py-20">
       <div className="bg-white rounded-2xl shadow-xl p-10 max-w-2xl w-full border border-gray-200">
         <h2 className="text-4xl font-extrabold mb-8 text-center text-green-600 drop-shadow-md">
           {HowToUseGuide.title}

@@ -1,33 +1,49 @@
 "use client"
 
 import * as React from "react"
-import { Calendar } from "@/components/ui/calendar"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { Button } from "@/components/ui/button"
+import { ChevronDownIcon } from "lucide-react"
 
-export default function CalendarDisplay() {
-  const [date, setDate] = React.useState<Date | undefined>(new Date(2025, 5, 12))
-  const [open, setOpen] = React.useState(false);
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import { Label } from "@/components/ui/label"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+export function CalendarDisplay( { title }: { title: string }) {
+  const [open, setOpen] = React.useState(false)
+  const [date, setDate] = React.useState<Date | undefined>(undefined)
 
   return (
-    <div className="flex flex-col items-center mt-20 mb-20">
-      <Collapsible open={open} onOpenChange={setOpen} className="w-full max-w-md">
-        <CollapsibleTrigger asChild>
-          <Button variant="outline" className="w-full mb-4">
-            {open ? "Hide Calendar" : "Show Calendar"}
+    <div className="flex flex-col gap-3">
+      <Label htmlFor="date" className="px-1">
+        {title}
+      </Label>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            id="date"
+            className="w-48 justify-between font-normal"
+          >
+            {date ? date.toLocaleDateString() : "Select date"}
+            <ChevronDownIcon />
           </Button>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
           <Calendar
             mode="single"
-            defaultMonth={date}
-            numberOfMonths={2}
             selected={date}
-            onSelect={setDate}
-            className="rounded-lg border shadow-sm justify-center"
+            captionLayout="dropdown"
+            onSelect={(date) => {
+              setDate(date)
+              setOpen(false)
+            }}
           />
-        </CollapsibleContent>
-      </Collapsible>
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }

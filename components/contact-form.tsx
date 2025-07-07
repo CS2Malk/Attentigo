@@ -37,7 +37,7 @@ export function ContactForm() {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-transparent">
+    <div className="flex justify-center items-center py-20 bg-transparent">
       <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-8 md:p-12">
         <h2 className="text-4xl font-bold text-center mb-8 text-green-600 drop-shadow-md">
           Contact Us

@@ -126,3 +126,8 @@ export const ContactPageConstants = {
   messagePlaceholder: "How can we help you?",
   buttonText: "Send Message",
 };
+
+export const MarkAttendanceConstants = {
+  Mark: "Mark Attendance",
+  Dashboard: "Go to Dashboard"
+}
