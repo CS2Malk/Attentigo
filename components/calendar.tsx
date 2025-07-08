@@ -12,9 +12,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function CalendarDisplay( { title }: { title: string }) {
+export function CalendarDisplay({ title, value, onChange }: { title: string; value?: Date; onChange?: (date?: Date) => void }) {
   const [open, setOpen] = React.useState(false)
-  const [date, setDate] = React.useState<Date | undefined>(undefined)
 
   return (
     <div className="flex flex-col gap-3">
@@ -28,17 +27,17 @@ export function CalendarDisplay( { title }: { title: string }) {
             id="date"
             className="w-48 justify-between font-normal"
           >
-            {date ? date.toLocaleDateString() : "Select date"}
+            {value ? value.toLocaleDateString() : "Select date"}
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto overflow-hidden p-0" align="start">
           <Calendar
             mode="single"
-            selected={date}
+            selected={value}
             captionLayout="dropdown"
             onSelect={(date) => {
-              setDate(date)
+              if (onChange) onChange(date)
               setOpen(false)
             }}
           />
