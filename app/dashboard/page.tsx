@@ -4,6 +4,8 @@ import { CalendarDisplay } from "@/components/calendar"
 import TableDisplay from '@/components/table';
 import type { AttendanceRecord } from '@/components/table';
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
+import { CheckCircle } from 'lucide-react';
 
 
 import { useState } from 'react';
@@ -42,6 +44,14 @@ const DashboardPage = () => {
 
   return (
     <div className="pt-15 pb-20 w-full max-w-5xl mx-auto px-2">
+      <div className="mb-8 flex justify-center">
+        <Link href="/mark-attendance">
+          <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold flex items-center space-x-2 shadow-lg">
+            <CheckCircle className="h-5 w-5" />
+            <span>Mark Today's Attendance</span>
+          </Button>
+        </Link>
+      </div>
       {hasEntries ? (
         <div className="flex flex-col md:flex-row gap-y-8 md:gap-y-0 md:gap-x-10 items-start justify-center w-full">
           <div className="flex flex-col min-w-[220px] space-y-8 mt-18 items-center w-full md:w-auto">
