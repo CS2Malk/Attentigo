@@ -3,6 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/lib/auth-context";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter a valid email address" }),
@@ -21,6 +24,10 @@ const formSchema = z.object({
 });
 
 export function LoginForm() {
+  const { login, isLoading, error } = useAuth();
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -29,9 +36,21 @@ export function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // You can handle the form submission here (e.g., send to API)
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+    
+    try {
+      const success = await login(values.email, values.password);
+      
+      if (success) {
+        // Redirect to dashboard on successful login
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -42,6 +61,12 @@ export function LoginForm() {
         </h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {error && (
+              <div className="bg-red-50 border border-red-300 text-red-800 px-4 py-3 rounded-lg text-center">
+                {error}
+              </div>
+            )}
+            
             <FormField
               control={form.control}
               name="email"
@@ -54,6 +79,7 @@ export function LoginForm() {
                       type="email"
                       {...field}
                       className="h-12"
+                      disabled={isSubmitting || isLoading}
                     />
                   </FormControl>
                   <FormMessage />
@@ -71,7 +97,8 @@ export function LoginForm() {
                       placeholder="Enter your password"
                       type="password"
                       {...field}
-                      className="h-12 "
+                      className="h-12"
+                      disabled={isSubmitting || isLoading}
                     />
                   </FormControl>
                   <FormMessage />
@@ -81,9 +108,10 @@ export function LoginForm() {
             <div className="flex justify-center pt-2">
               <Button
                 type="submit"
-                className="w-48 h-12 text-lg bg-green-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition hover:cursor-pointer"
+                className="w-48 h-12 text-lg bg-green-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting || isLoading}
               >
-                Log In
+                {isSubmitting || isLoading ? 'Logging in...' : 'Log In'}
               </Button>
             </div>
           </form>
