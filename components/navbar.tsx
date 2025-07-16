@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 
 const Navbar = () => {
-  const { student, logout } = useAuth();
+  const { student, logout } = useAuth() as { student: any; logout: () => void };
   const router = useRouter();
 
   const handleLogout = () => {
@@ -46,7 +46,7 @@ const Navbar = () => {
               <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-gray-200">
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
                   <User className="h-4 w-4" />
-                  <span>{student.FirstName}</span>
+                  <span>{student?.FirstName}</span>
                 </div>
                 <Button
                   variant="outline"
@@ -85,7 +85,7 @@ const Navbar = () => {
                     <div className="mb-4 pb-4 border-b border-gray-200">
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <User className="h-4 w-4" />
-                        <span>{student.FirstName}</span>
+                        <span>{student?.FirstName}</span>
                       </div>
                     </div>
                   )}
@@ -107,5 +107,7 @@ const Navbar = () => {
     </header>
   );
 };
+
+//
 
 export default Navbar;

@@ -1,20 +1,26 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { CalendarDisplay } from "@/components/calendar";
 import TableDisplay from "@/components/table";
 import type { AttendanceRecord } from "@/components/table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { CheckCircle } from "lucide-react";
-
-import { useState } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 
 const DashboardPage = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [entries, setEntries] = useState<AttendanceRecord[]>([]);
+  const { student } = useAuth();
+  const router = useRouter();
 
   React.useEffect(() => {
+    if (!student) {
+      router.replace("/");
+      return;
+    }
     if (startDate && endDate && startDate <= endDate) {
       // Generate entries for each day in the range
       const result: AttendanceRecord[] = [];
@@ -32,7 +38,7 @@ const DashboardPage = () => {
     } else {
       setEntries([]);
     }
-  }, [startDate, endDate]);
+  }, [student, startDate, endDate, router]);
 
   const hasEntries = entries.length > 0;
   const handleReset = () => {
@@ -40,6 +46,8 @@ const DashboardPage = () => {
     setEndDate(undefined);
     setEntries([]);
   };
+
+  if (!student) return null;
 
   return (
     <div className="pt-15 pb-20 w-full max-w-5xl mx-auto px-2">
