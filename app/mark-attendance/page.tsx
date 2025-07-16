@@ -6,6 +6,7 @@ import { MarkAttendanceConstants } from "@/lib/constants";
 import { useAuth } from '@/lib/auth-context';
 import { createAttendanceRecord } from '@/lib/strapi';
 import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button";
 
 const MarkAttendancePage = () => {
   const today = new Date().toLocaleDateString();

@@ -6,7 +6,7 @@ const STRAPI_TOKEN = process.env.NEXT_PUBLIC_STRAPI_PROD_API_TOKEN;
 async function strapiRequest<T>(
   endpoint: string,
   options: RequestInit = {}
-): Promise<any> {
+): Promise<T> {
   const url = `${STRAPI_URL}${endpoint}`;
   
   const config: RequestInit = {
@@ -25,7 +25,7 @@ async function strapiRequest<T>(
       throw new Error(`Strapi API error: ${response.status} ${response.statusText}`);
     }
     
-    return await response.json();
+    return await response.json() as T;
   } catch (error) {
     console.error('Strapi API request failed:', error);
     throw error;
