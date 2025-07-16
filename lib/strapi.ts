@@ -70,7 +70,7 @@ export async function authenticateStudent(
 // Fetch student by ID
 export async function getStudentById(id: number): Promise<any | null> {
   try {
-    const response = await strapiRequest<any>(`/students/${id}?populate=school`);
+    const response = await strapiRequest<any>(`/api/students/${id}?populate=school`);
     return response.data;
   } catch (error) {
     console.error('Failed to fetch student:', error);
@@ -114,5 +114,30 @@ export async function createAttendanceRecord(
   } catch (error) {
     console.error('Failed to create attendance record:', error);
     throw new Error('Failed to create attendance record');
+  }
+} 
+
+// Fetch school by ID with location data
+export async function getSchoolById(schoolId: number): Promise<any | null> {
+  try {
+    const response = await strapiRequest<any>(`/api/schools/${schoolId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch school:', error);
+    throw new Error('Failed to fetch school data');
+  }
+}
+
+// Fetch school data for a student (assuming student has school relation)
+export async function getStudentSchool(studentId: number): Promise<any | null> {
+  try {
+    const student = await getStudentById(studentId);
+    if (student && student.school) {
+      return await getSchoolById(student.school.documentId);
+    }
+    return null;
+  } catch (error) {
+    console.error('Failed to fetch student school:', error);
+    throw new Error('Failed to fetch student school data');
   }
 } 
