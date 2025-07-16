@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
+// Define Student type
+type Student = any;
 import Link from 'next/link';
 import { MarkAttendanceConstants } from "@/lib/constants";
 import { useAuth } from '@/lib/auth-context';
@@ -10,7 +12,8 @@ import { Button } from "@/components/ui/button";
 
 const MarkAttendancePage = () => {
   const today = new Date().toLocaleDateString();
-  const { student } = useAuth();
+  // Type student as Student | null
+  const { student } = useAuth() as { student: Student | null };
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
@@ -34,7 +37,7 @@ const MarkAttendancePage = () => {
     try {
       const todayISO = new Date().toISOString().split('T')[0];
       const timestamp = new Date().toISOString();
-      await createAttendanceRecord(student.documentId, todayISO, true, timestamp);
+      await createAttendanceRecord(student?.documentId, todayISO, true, timestamp);
       
       setMessage({
         type: 'success',

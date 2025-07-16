@@ -8,7 +8,7 @@ import { useAuth } from "@/lib/auth-context";
 import { User } from "lucide-react";
 
 const Hero = () => {
-  const { student, isLoading } = useAuth();
+  const { student, isLoading } = useAuth() as { student: any; isLoading: boolean };
 
   return (
     <section className="flex flex-col items-center justify-center w-full mt-32">
@@ -25,7 +25,7 @@ const Hero = () => {
         {student && (
           <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
             <p className="text-green-800 font-medium">
-              Welcome back, {student.FirstName}! 
+              Welcome back, {student?.FirstName}! 
             </p>
           </div>
         )}

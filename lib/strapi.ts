@@ -55,7 +55,7 @@ export async function authenticateStudent(
     
     // Find student with matching email and password
     const authenticatedStudent = students.find(
-      student => 
+      (student: any) => 
         student.Email.toLowerCase() === email.toLowerCase() && 
         student.Password.toLowerCase() === password.toLowerCase()
     );
