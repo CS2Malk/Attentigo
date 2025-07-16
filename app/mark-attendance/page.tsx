@@ -1,22 +1,28 @@
 "use client";
 
-import { Button } from '@/components/ui/button';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { MarkAttendanceConstants } from "@/lib/constants";
 import { useAuth } from '@/lib/auth-context';
-import { useState } from 'react';
 import { createAttendanceRecord } from '@/lib/strapi';
 import { useRouter } from 'next/navigation';
 
 const MarkAttendancePage = () => {
   const today = new Date().toLocaleDateString();
-  const { student} = useAuth()
+  const { student } = useAuth();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
 
+  // Redirect if logged in
+  React.useEffect(() => {
+    if (student) {
+      router.replace('/');
+    }
+  }, [student, router]);
+
   const handleMarkAttendance = async () => {
-    if(!student) {
+    if (!student) {
       setMessage({ type: 'error', text: 'Please log in to mark attendance' });
       return;
     }
@@ -48,6 +54,8 @@ const MarkAttendancePage = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (student) return null;
 
   return (
     <div className="flex flex-col items-center justify-center py-20">

@@ -1,21 +1,26 @@
 "use client"
-import React from 'react'
-import { CalendarDisplay } from "@/components/calendar"
+import React, { useState } from 'react';
+import { CalendarDisplay } from "@/components/calendar";
 import TableDisplay from '@/components/table';
 import type { AttendanceRecord } from '@/components/table';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
-
-
-import { useState } from 'react';
+import { useAuth } from '@/lib/auth-context';
+import { useRouter } from 'next/navigation';
 
 const DashboardPage = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [entries, setEntries] = useState<AttendanceRecord[]>([]);
+  const { student } = useAuth();
+  const router = useRouter();
 
   React.useEffect(() => {
+    if (!student) {
+      router.replace('/');
+      return;
+    }
     if (startDate && endDate && startDate <= endDate) {
       // Generate entries for each day in the range
       const result: AttendanceRecord[] = [];
@@ -33,7 +38,7 @@ const DashboardPage = () => {
     } else {
       setEntries([]);
     }
-  }, [startDate, endDate]);
+  }, [student, startDate, endDate, router]);
 
   const hasEntries = entries.length > 0;
   const handleReset = () => {
@@ -42,13 +47,15 @@ const DashboardPage = () => {
     setEntries([]);
   };
 
+  if (!student) return null;
+
   return (
     <div className="pt-15 pb-20 w-full max-w-5xl mx-auto px-2">
       <div className="mb-8 flex justify-center">
         <Link href="/mark-attendance">
           <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold flex items-center space-x-2 shadow-lg">
             <CheckCircle className="h-5 w-5" />
-            <span>Mark Today's Attendance</span>
+            <span>Mark Today&apos;s Attendance</span>
           </Button>
         </Link>
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 import { authenticateStudent } from '@/lib/strapi';
 
 interface AuthContextType {
@@ -20,13 +21,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Check for existing session on mount
   useEffect(() => {
-    const savedStudent = localStorage.getItem('attentigo_student');
+    const savedStudent = Cookies.get('attentigo_student');
     if (savedStudent) {
       try {
         setStudent(JSON.parse(savedStudent));
       } catch (error) {
         console.error('Failed to parse saved student data:', error);
-        localStorage.removeItem('attentigo_student');
+        Cookies.remove('attentigo_student');
       }
     }
     setIsLoading(false);
@@ -41,8 +42,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (authenticatedStudent) {
         setStudent(authenticatedStudent);
-        // Save to localStorage for persistence
-        localStorage.setItem('attentigo_student', JSON.stringify(authenticatedStudent));
+        // Save to cookie for persistence
+        Cookies.set('attentigo_student', JSON.stringify(authenticatedStudent), { expires: 1/24, secure: true });
         setIsLoading(false);
         return true;
       } else {
@@ -61,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setStudent(null);
     setError(null);
-    localStorage.removeItem('attentigo_student');
+    Cookies.remove('attentigo_student');
   };
 
   const value = {
