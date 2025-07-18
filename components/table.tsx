@@ -22,17 +22,17 @@ export type TableDisplayProps = {
 
 
 
-function isWithinRangeAndWeekday(dateStr: string, start?: Date, end?: Date) {
-  const d = new Date(dateStr);
-  if (start && d < start) return false;
-  if (end && d > end) return false;
-  // 0 = Sunday, 6 = Saturday
-  if (d.getDay() === 0 || d.getDay() === 6) return false;
-  return true;
-}
+// function isWithinRangeAndWeekday(dateStr: string, start?: Date, end?: Date) {
+//   const d = new Date(dateStr);
+//   if (start && d < start) return false;
+//   if (end && d > end) return false;
+//   // 0 = Sunday, 6 = Saturday
+//   if (d.getDay() === 0 || d.getDay() === 6) return false;
+//   return true;
+// }
 
 export default function TableDisplay({ startDate, endDate, records = [] }: TableDisplayProps) {
-  const filtered = records.filter((r) => isWithinRangeAndWeekday(r.date, startDate, endDate));
+  // const filtered = records.filter((r) => isWithinRangeAndWeekday(r.date, startDate, endDate));
   const getDayName = (dateStr: string) => {
     const d = new Date(dateStr);
     return d.toLocaleDateString(undefined, { weekday: 'long' });
@@ -48,7 +48,7 @@ export default function TableDisplay({ startDate, endDate, records = [] }: Table
         </TableRow>
       </TableHeader>
       <TableBody>
-        {filtered.map((record, idx) => (
+        {records.map((record, idx) => (
           <TableRow key={record.date + idx}>
             <TableCell>
               <div>{record.date}</div>

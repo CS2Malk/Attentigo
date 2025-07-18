@@ -9,13 +9,13 @@ const LoginPage = () => {
   const { student } = useAuth();
   const router = useRouter();
 
-  React.useEffect(() => {
-    if (student) {
-      router.replace('/');
-    }
-  }, [student, router]);
+  // React.useEffect(() => {
+  //   if (student) {
+  //     router.replace('/dashboard');
+  //   }
+  // }, [student, router]);
 
-  if (student) return null;
+  // if (student) return null;
 
   return (
     <div>

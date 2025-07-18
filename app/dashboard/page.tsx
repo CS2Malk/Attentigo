@@ -8,6 +8,7 @@ import Link from "next/link";
 import { CheckCircle } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
+import { getStudentAttendance } from "@/lib/strapi";
 
 const DashboardPage = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -15,30 +16,47 @@ const DashboardPage = () => {
   const [entries, setEntries] = useState<AttendanceRecord[]>([]);
   const { student } = useAuth();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const transformAttendanceData = (attendanceData: any[]) : AttendanceRecord[] => {
+    return attendanceData.map((record) => ({
+      date: record.Date,
+      attendance: record.attendanceMarked || false,
+      tardy: record.tardy || false,
+    }));
+  };
+
+  const fetchAttendanceRecords = React.useCallback(async () => {
+    // @ts-ignore
+    if (!student?.documentId) {
+      return
+  }
+    setIsLoading(true);
+    setError(null);
+    try {
+      // @ts-ignore
+      const attendanceData = await getStudentAttendance(student?.documentId);
+      console.log('Fetched attendance data:', attendanceData);
+    }
+    catch (error) {
+      console.error('Failed to fetch attendance records:', error);
+      setError('Failed to fetch attendance records. Please try again.');
+    }
+    finally {
+      setIsLoading(false);
+    }
+},
+  [student]
+);
 
   React.useEffect(() => {
     if (!student) {
       router.replace("/");
       return;
     }
-    if (startDate && endDate && startDate <= endDate) {
-      // Generate entries for each day in the range
-      const result: AttendanceRecord[] = [];
-      let d = new Date(startDate);
-      while (d <= endDate) {
-        result.push({
-          date: d.toISOString().slice(0, 10),
-          attendance: false,
-          tardy: false,
-        });
-        d = new Date(d);
-        d.setDate(d.getDate() + 1);
-      }
-      setEntries(result);
-    } else {
-      setEntries([]);
-    }
-  }, [student, startDate, endDate, router]);
+    fetchAttendanceRecords()
+  }, [student, router, fetchAttendanceRecords]);
 
   const hasEntries = entries.length > 0;
   const handleReset = () => {

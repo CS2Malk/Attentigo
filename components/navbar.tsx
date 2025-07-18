@@ -52,7 +52,7 @@ const Navbar = () => {
                   variant="outline"
                   size="sm"
                   onClick={handleLogout}
-                  className="flex items-center space-x-1"
+                  className="flex items-center space-x-1 hover:cursor-pointer"
                 >
                   <LogOut className="h-4 w-4" />
                   <span>Logout</span>

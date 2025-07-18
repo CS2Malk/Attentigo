@@ -55,7 +55,9 @@ const MarkAttendancePage = () => {
     if (student) {
       fetchSchoolData();
     }
-  }, [student]);
+  },
+  [],
+);
 
   const verifyLocation = async () => {
     if (!schoolData) {
@@ -163,9 +165,9 @@ const MarkAttendancePage = () => {
       });
 
       // Redirect to dashboard after 1 seconds
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 1000);
+      // setTimeout(() => {
+      //   router.push("/dashboard");
+      // }, 1000);
     } catch (error) {
       console.error("Failed to mark attendance:", error);
       setMessage({

@@ -82,7 +82,7 @@ export async function getStudentById(id: number): Promise<any | null> {
 export async function getStudentAttendance(studentId: number): Promise<any> {
   try {
     const response = await strapiRequest<any>(
-      `/attendances?filters[student][id][$eq]=${studentId}&populate=student&sort=date:desc`
+      `/api/attendances?filters[student][documentId][$eq]=${studentId}&populate=student&sort=Date:desc`
     );
     return response.data;
   } catch (error) {
