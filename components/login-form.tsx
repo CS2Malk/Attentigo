@@ -20,7 +20,9 @@ import { useAuth } from "@/lib/auth-context";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter a valid email address" }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters long." }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long." }),
 });
 
 export function LoginForm() {
@@ -38,16 +40,27 @@ export function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    
+    const start = performance.now();
     try {
-      const success = await login(values.email, values.password);
-      
+      const success = await Promise.race([
+        login(values.email, values.password),
+        new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error("Login timed out. Please try again.")),
+            10000
+          )
+        ), // 10s timeout
+      ]);
+      const end = performance.now();
+      console.log(`Login took ${end - start} ms`);
       if (success) {
-        // Redirect to dashboard on successful login
-        router.push('/dashboard');
+        router.push("/dashboard");
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
+      form.setError("email", {
+        message: error instanceof Error ? error.message : "Login failed",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -66,13 +79,15 @@ export function LoginForm() {
                 {error}
               </div>
             )}
-            
+
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold text-lg text-black">Email</FormLabel>
+                  <FormLabel className="font-semibold text-lg text-black">
+                    Email
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="you@email.com"
@@ -91,7 +106,9 @@ export function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold text-lg text-black">Password</FormLabel>
+                  <FormLabel className="font-semibold text-lg text-black">
+                    Password
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter your password"
@@ -111,7 +128,7 @@ export function LoginForm() {
                 className="w-48 h-12 text-lg bg-green-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting || isLoading}
               >
-                {isSubmitting || isLoading ? 'Logging in...' : 'Log In'}
+                {isSubmitting || isLoading ? "Logging in..." : "Log In"}
               </Button>
             </div>
           </form>
