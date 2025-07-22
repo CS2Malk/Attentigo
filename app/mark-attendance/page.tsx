@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { createAttendanceRecord, getStudentSchool } from "@/lib/strapi";
 import { useRouter } from "next/navigation";
 import { useGeolocation } from "@/lib/use-geolocation";
-import { isWithinRadius } from "@/lib/utils";
+import { isWithinRadius, isWithinSchoolHours } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const MarkAttendancePage = () => {
@@ -152,16 +152,34 @@ const MarkAttendancePage = () => {
     try {
       const todayISO = new Date().toISOString().split("T")[0];
       const timestamp = new Date().toISOString();
+      
+      // Check if attendance is tardy based on school hours
+      let isTardy = false;
+      let attendanceMessage = "Attendance marked successfully!";
+      
+      if (schoolData && schoolData.startTime && schoolData.endTime) {
+        const { isTardy: tardyStatus } = isWithinSchoolHours(
+          schoolData.startTime,
+          schoolData.endTime
+        );
+        isTardy = tardyStatus;
+        
+        if (isTardy) {
+          attendanceMessage = "Late attendance marked successfully!";
+        }
+      }
+      
       await createAttendanceRecord(
         student?.documentId,
         todayISO,
         true,
-        timestamp
+        timestamp,
+        isTardy
       );
 
       setMessage({
-        type: "success",
-        text: `Attendance marked successfully!`,
+        type: isTardy ? "info" : "success",
+        text: attendanceMessage,
       });
 
       // Redirect to dashboard after 1 seconds
@@ -185,8 +203,51 @@ const MarkAttendancePage = () => {
         <h1 className="text-4xl sm:text-5xl font-extrabold mb-2 text-green-600">
           {MarkAttendanceConstants.Mark}
         </h1>
-        <div className="flex items-center gap-2 text-lg sm:text-xl text-gray-700 bg-green-50 px-4 py-2 rounded-full shadow-inner">
-          <span className="font-semibold text-green-500">{today}</span>
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex items-center gap-2 text-lg sm:text-xl text-gray-700 bg-green-50 px-4 py-2 rounded-full shadow-inner">
+            <span className="font-semibold text-green-500">{today}</span>
+          </div>
+          
+          {schoolData && schoolData.startTime && schoolData.endTime && (
+            <div className="text-center space-y-2">
+              <div className="text-sm text-gray-600">
+                <span className="font-medium">School Hours:</span> {schoolData.startTime} - {schoolData.endTime}
+              </div>
+              <div className="text-sm text-gray-600">
+                <span className="font-medium">Current Time:</span> {new Date().toTimeString().slice(0, 5)}
+              </div>
+              {(() => {
+                try {
+                  const { withinHours, isTardy } = isWithinSchoolHours(schoolData.startTime, schoolData.endTime);
+                  if (isTardy) {
+                    return (
+                      <div className="text-sm text-orange-600 font-semibold">
+                        ⚠️ Marking attendance now will be recorded as late
+                      </div>
+                    );
+                  } else if (withinHours) {
+                    return (
+                      <div className="text-sm text-green-600 font-semibold">
+                        ✅ You're within school hours
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div className="text-sm text-blue-600 font-semibold">
+                        📅 School hasn't started yet
+                      </div>
+                    );
+                  }
+                } catch (error) {
+                  return (
+                    <div className="text-sm text-gray-500">
+                      School hours format invalid
+                    </div>
+                  );
+                }
+              })()}
+            </div>
+          )}
         </div>
 
         {/* Location Verification Section */}

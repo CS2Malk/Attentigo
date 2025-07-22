@@ -96,7 +96,8 @@ export async function createAttendanceRecord(
   studentId: any,
   date: string,
   attendanceMarked: boolean,
-  timestamp: string
+  timestamp: string,
+  tardy: boolean = false
 ): Promise<any> {
   try {
     const response = await strapiRequest<any>('/api/attendances', {
@@ -107,6 +108,7 @@ export async function createAttendanceRecord(
           Date: date,
           attendanceMarked: attendanceMarked,
           Timestamp: timestamp,
+          tardy: tardy,
         },
       }),
     });
