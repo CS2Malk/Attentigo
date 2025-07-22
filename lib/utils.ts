@@ -40,17 +40,6 @@ export function isWithinRadius(
   return distance <= radiusInMeters;
 }
 
-export function isAttendanceTardy(schoolStartTime: string): boolean {
-  const now = new Date();
-  const currentTime = now.toTimeString().slice(0, 5);
-  
-  if (currentTime > schoolStartTime) {
-    return true;
-  }
-  
-  return false;
-}
-
 export function timeToMinutes(timeString: string): number {
   const [hours, minutes] = timeString.split(':').map(Number);
   return hours * 60 + minutes;
