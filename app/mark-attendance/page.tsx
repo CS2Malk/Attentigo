@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { createAttendanceRecord, getStudentSchool } from "@/lib/strapi";
 import { useRouter } from "next/navigation";
 import { useGeolocation } from "@/lib/use-geolocation";
-import { isWithinRadius, isWithinSchoolHours } from "@/lib/utils";
+import { isWithinRadius, checkAttendanceStatus } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const MarkAttendancePage = () => {
@@ -153,15 +153,12 @@ const MarkAttendancePage = () => {
       const todayISO = new Date().toISOString().split("T")[0];
       const timestamp = new Date().toISOString();
       
-      // Check if attendance is tardy based on school hours
+      // Check if attendance is tardy based on school start time
       let isTardy = false;
       let attendanceMessage = "Attendance marked successfully!";
       
-      if (schoolData && schoolData.startTime && schoolData.endTime) {
-        const { isTardy: tardyStatus } = isWithinSchoolHours(
-          schoolData.startTime,
-          schoolData.endTime
-        );
+      if (schoolData && schoolData.startTime) {
+        const { isTardy: tardyStatus } = checkAttendanceStatus(schoolData.startTime);
         isTardy = tardyStatus;
         
         if (isTardy) {
@@ -208,40 +205,34 @@ const MarkAttendancePage = () => {
             <span className="font-semibold text-green-500">{today}</span>
           </div>
           
-          {schoolData && schoolData.startTime && schoolData.endTime && (
+          {schoolData && schoolData.startTime && (
             <div className="text-center space-y-2">
               <div className="text-sm text-gray-600">
-                <span className="font-medium">School Hours:</span> {schoolData.startTime} - {schoolData.endTime}
+                <span className="font-medium">School Start Time:</span> {schoolData.startTime}
               </div>
               <div className="text-sm text-gray-600">
                 <span className="font-medium">Current Time:</span> {new Date().toTimeString().slice(0, 5)}
               </div>
               {(() => {
                 try {
-                  const { withinHours, isTardy } = isWithinSchoolHours(schoolData.startTime, schoolData.endTime);
+                  const { isOnTime, isTardy } = checkAttendanceStatus(schoolData.startTime);
                   if (isTardy) {
                     return (
                       <div className="text-sm text-orange-600 font-semibold">
                         ⚠️ Marking attendance now will be recorded as late
                       </div>
                     );
-                  } else if (withinHours) {
+                  } else if (isOnTime) {
                     return (
                       <div className="text-sm text-green-600 font-semibold">
-                        ✅ You're within school hours
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div className="text-sm text-blue-600 font-semibold">
-                        📅 School hasn't started yet
+                        ✅ You're on time for school
                       </div>
                     );
                   }
                 } catch (error) {
                   return (
                     <div className="text-sm text-gray-500">
-                      School hours format invalid
+                      School start time format invalid
                     </div>
                   );
                 }

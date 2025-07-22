@@ -40,11 +40,11 @@ export function isWithinRadius(
   return distance <= radiusInMeters;
 }
 
-export function isAttendanceTardy(schoolStartTime: string, schoolEndTime: string): boolean {
+export function isAttendanceTardy(schoolStartTime: string): boolean {
   const now = new Date();
   const currentTime = now.toTimeString().slice(0, 5);
   
-  if (currentTime > schoolEndTime) {
+  if (currentTime > schoolStartTime) {
     return true;
   }
   
@@ -56,21 +56,19 @@ export function timeToMinutes(timeString: string): number {
   return hours * 60 + minutes;
 }
 
-// Check if attendance is within school hours (including late but still within school time)
-export function isWithinSchoolHours(schoolStartTime: string, schoolEndTime: string): { withinHours: boolean; isTardy: boolean } {
+export function checkAttendanceStatus(schoolStartTime: string): { isOnTime: boolean; isTardy: boolean } {
   const now = new Date();
   const currentTime = now.toTimeString().slice(0, 5); 
   
   const currentMinutes = timeToMinutes(currentTime);
   const startMinutes = timeToMinutes(schoolStartTime);
-  const endMinutes = timeToMinutes(schoolEndTime);
   
-  const withinHours = currentMinutes >= startMinutes && currentMinutes <= endMinutes;
+  const isOnTime = currentMinutes <= startMinutes;
   
-  const isTardy = currentMinutes > endMinutes;
+  const isTardy = currentMinutes > startMinutes;
   
   return {
-    withinHours: withinHours, 
+    isOnTime: isOnTime, 
     isTardy: isTardy 
   };
 }
