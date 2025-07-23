@@ -55,7 +55,7 @@ const MarkAttendancePage = () => {
     if (student) {
       fetchSchoolData();
     }
-  },
+  }, //@ts-ignore
   [],
 );
 
@@ -225,7 +225,7 @@ const MarkAttendancePage = () => {
                   } else if (isOnTime) {
                     return (
                       <div className="text-sm text-green-600 font-semibold">
-                        ✅ You're on time for school
+                        ✅ You are on time for school
                       </div>
                     );
                   }
