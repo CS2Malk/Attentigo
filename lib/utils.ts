@@ -1,8 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 // Calculate distance between two coordinates using Haversine formula
@@ -36,6 +36,40 @@ export function isWithinRadius(
   targetLon: number,
   radiusInMeters: number
 ): boolean {
-  const distance = calculateDistance(currentLat, currentLon, targetLat, targetLon);
+  const distance = calculateDistance(
+    currentLat,
+    currentLon,
+    targetLat,
+    targetLon
+  );
   return distance <= radiusInMeters;
+}
+
+// export function isAttendanceTardy(
+//   schoolStartTime: string,
+//   schoolEndTime: string
+// ): boolean {
+//   const now = new Date();
+//   const currentTime = now.toTimeString().slice(0, 5); // HH:MM format
+//   if (currentTime > schoolStartTime) {
+//     return true;
+//   }
+//   return false;
+// }
+
+export function timeToMinutes(timeString: string): number {
+  const [hours, minutes] = timeString.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
+export function checkAttendanceStatus(
+  schoolStartTime: string,
+): { onTime: boolean; istardy: boolean } {
+  const now = new Date();
+  const currentTime = now.toTimeString().slice(0, 5); // HH:MM format
+  const currentMinutes = timeToMinutes(currentTime);
+  const startMinutes = timeToMinutes(schoolStartTime);
+  const isOnTime = currentMinutes <= startMinutes;
+  const isTardy = currentMinutes > startMinutes;
+  return { onTime: isOnTime, istardy: isTardy };
 }

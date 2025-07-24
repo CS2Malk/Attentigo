@@ -10,8 +10,9 @@ import { useEffect } from "react";
 import { createAttendanceRecord, getStudentSchool } from "@/lib/strapi";
 import { useRouter } from "next/navigation";
 import { useGeolocation } from "@/lib/use-geolocation";
-import { isWithinRadius } from "@/lib/utils";
+import { isWithinRadius, checkAttendanceStatus } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { de } from "date-fns/locale";
 
 const MarkAttendancePage = () => {
   const today = new Date().toLocaleDateString();
@@ -41,6 +42,7 @@ const MarkAttendancePage = () => {
         try {
           // @ts-ignore
           const school = await getStudentSchool(student.documentId);
+          console.log("school", school);
           setSchoolData(school);
         } catch (error) {
           console.error("Failed to fetch school data:", error);
@@ -56,7 +58,7 @@ const MarkAttendancePage = () => {
       fetchSchoolData();
     }
   },
-  [],
+  [student],
 );
 
   const verifyLocation = async () => {
@@ -96,6 +98,7 @@ const MarkAttendancePage = () => {
         schoolData.Latitude,
         schoolData.Longitude,
         50 // 50 meters radius
+        // fetch and create radius from strapi
       );
 
       if (withinRadius) {
@@ -152,11 +155,21 @@ const MarkAttendancePage = () => {
     try {
       const todayISO = new Date().toISOString().split("T")[0];
       const timestamp = new Date().toISOString();
+      let isTardy = false;
+      let attendanceMessage = "attendance marked successfully";
+      if (schoolData && schoolData.startTime) {
+        const { istardy: tardyStatus } = checkAttendanceStatus(schoolData.startTime);
+        isTardy = tardyStatus;
+        if (isTardy) {
+          attendanceMessage = "Late attendance marked successfully";
+        }
+      }
       await createAttendanceRecord(
         student?.documentId,
         todayISO,
         true,
-        timestamp
+        timestamp,
+        isTardy
       );
 
       setMessage({
@@ -188,6 +201,18 @@ const MarkAttendancePage = () => {
         <div className="flex items-center gap-2 text-lg sm:text-xl text-gray-700 bg-green-50 px-4 py-2 rounded-full shadow-inner">
           <span className="font-semibold text-green-500">{today}</span>
         </div>
+        {
+          schoolData && schoolData.startTime && (
+            <div className="space-y-2 text-center">
+              <div className="text-sm text-gray-600">
+                <span className="font-medium">School starting time: {schoolData.startTime}</span>
+              </div>
+              <div className="text-sm text-gray-600">
+                <span className="font-medium">Current time: {new Date().toTimeString().slice(0, 5)}</span>
+              </div>
+            </div>
+          )
+        }
 
         {/* Location Verification Section */}
         <div className="w-full max-w-md space-y-4">
