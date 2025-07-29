@@ -12,7 +12,6 @@ import { useRouter } from "next/navigation";
 import { useGeolocation } from "@/lib/use-geolocation";
 import { isWithinRadius, checkAttendanceStatus } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { de } from "date-fns/locale";
 
 const MarkAttendancePage = () => {
   const today = new Date().toLocaleDateString();
@@ -57,9 +56,7 @@ const MarkAttendancePage = () => {
     if (student) {
       fetchSchoolData();
     }
-  },
-  [student],
-);
+  }, [student]);
 
   const verifyLocation = async () => {
     if (!schoolData) {
@@ -158,7 +155,9 @@ const MarkAttendancePage = () => {
       let isTardy = false;
       let attendanceMessage = "attendance marked successfully";
       if (schoolData && schoolData.startTime) {
-        const { istardy: tardyStatus } = checkAttendanceStatus(schoolData.startTime);
+        const { istardy: tardyStatus } = checkAttendanceStatus(
+          schoolData.startTime
+        );
         isTardy = tardyStatus;
         if (isTardy) {
           attendanceMessage = "Late attendance marked successfully";
@@ -201,18 +200,44 @@ const MarkAttendancePage = () => {
         <div className="flex items-center gap-2 text-lg sm:text-xl text-gray-700 bg-green-50 px-4 py-2 rounded-full shadow-inner">
           <span className="font-semibold text-green-500">{today}</span>
         </div>
-        {
-          schoolData && schoolData.startTime && (
-            <div className="space-y-2 text-center">
-              <div className="text-sm text-gray-600">
-                <span className="font-medium">School starting time: {schoolData.startTime}</span>
-              </div>
-              <div className="text-sm text-gray-600">
-                <span className="font-medium">Current time: {new Date().toTimeString().slice(0, 5)}</span>
-              </div>
+        {schoolData && schoolData.startTime && (
+          <div className="space-y-2 text-center">
+            <div className="text-sm text-gray-600">
+              <span className="font-medium">
+                School starting time: {schoolData.startTime}
+              </span>
             </div>
-          )
-        }
+            <div className="text-sm text-gray-600">
+              <span className="font-medium">
+                Current time: {new Date().toTimeString().slice(0, 5)}
+              </span>
+            </div>
+            {(() => {
+              try {
+                const { onTime, istardy } = checkAttendanceStatus(
+                  schoolData.startTime
+                );
+                if (istardy) {
+                  return (
+                    <div className="text-sm text-orange-500">You are late.</div>
+                  );
+                } else if (onTime) {
+                  return (
+                    <div className="text-sm text-green-500">
+                      You are on time.
+                    </div>
+                  );
+                }
+              } catch (error) {
+                return (
+                  <div className="text-sm text-red-500">
+                    Something goes wrong.
+                  </div>
+                );
+              }
+            })()}
+          </div>
+        )}
 
         {/* Location Verification Section */}
         <div className="w-full max-w-md space-y-4">
@@ -276,8 +301,8 @@ const MarkAttendancePage = () => {
               message.type === "success"
                 ? "bg-green-50 border-green-300 text-green-800"
                 : message.type === "error"
-                  ? "bg-red-50 border-red-300 text-red-800"
-                  : "bg-blue-50 border-blue-300 text-blue-800"
+                ? "bg-red-50 border-red-300 text-red-800"
+                : "bg-blue-50 border-blue-300 text-blue-800"
             }`}
           >
             <span>{message.text}</span>

@@ -14,9 +14,9 @@ const DashboardPage = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [entries, setEntries] = useState<AttendanceRecord[]>([]);
-  const { student } = useAuth();
+  const { student, isLoading } = useAuth();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [attendanceLoading, setAttendanceLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const transformAttendanceData = (
@@ -35,27 +35,31 @@ const DashboardPage = () => {
     end?: Date
   ): AttendanceRecord[] => {
     if (!start || !end) return records;
-    const startStr =
-      start.getFullYear() +
-      "-" +
-      String(start.getMonth() + 1).padStart(2, "0") +
-      "-" +
-      String(start.getDate()).padStart(2, "0");
-    const endStr =
-      end.getFullYear() +
-      "-" +
-      String(end.getMonth() + 1).padStart(2, "0") +
-      "-" +
-      String(end.getDate()).padStart(2, "0");
-    return records.filter((record) => {
-      const recordDateStr = record.date; // in YYYY-MM-DD format
-
-      const isInRange = recordDateStr >= startStr && recordDateStr <= endStr;
-      const recordDate = new Date(record.date + "T00:00:00"); // Add time to avoid timezone shift
-      const isWeekday = recordDate.getDay() !== 0 && recordDate.getDay() !== 6; // 0 = Sunday, 6 = Saturday
-
-      return isInRange && isWeekday;
+    const result: AttendanceRecord[] = [];
+    const dateToRecord: Record<string, AttendanceRecord> = {};
+    records.forEach((rec) => {
+      dateToRecord[rec.date] = rec;
     });
+    const current = new Date(start);
+    current.setHours(0, 0, 0, 0);
+    const endDate = new Date(end);
+    endDate.setHours(0, 0, 0, 0);
+    while (current <= endDate) {
+      const day = current.getDay();
+      if (day !== 0 && day !== 6) {
+        const yyyy = current.getFullYear();
+        const mm = String(current.getMonth() + 1).padStart(2, "0");
+        const dd = String(current.getDate()).padStart(2, "0");
+        const dateStr = `${yyyy}-${mm}-${dd}`;
+        if (dateToRecord[dateStr]) {
+          result.push(dateToRecord[dateStr]);
+        } else {
+          result.push({ date: dateStr, attendance: false, tardy: false });
+        }
+      }
+      current.setDate(current.getDate() + 1);
+    }
+    return result;
   };
 
   const fetchAttendanceRecords = React.useCallback(async () => {
@@ -63,7 +67,7 @@ const DashboardPage = () => {
     if (!student?.documentId) {
       return;
     }
-    setIsLoading(true);
+    setAttendanceLoading(true);
     setError(null);
     try {
       // @ts-ignore
@@ -75,33 +79,43 @@ const DashboardPage = () => {
       setError("Failed to fetch attendance records. Please try again.");
       setEntries([]);
     } finally {
-      setIsLoading(false);
+      setAttendanceLoading(false);
     }
   }, [student]);
 
   React.useEffect(() => {
-    if (!student) {
+    if (!isLoading && !student) {
       router.replace("/");
       return;
     }
-    fetchAttendanceRecords();
-  }, [student, router, fetchAttendanceRecords]);
+    if (student) {
+      fetchAttendanceRecords();
+    }
+  }, [student, isLoading, router, fetchAttendanceRecords]);
 
-  const filteredEntries: any[] = filterRecordsByDateRange(
+  const filteredEntries: AttendanceRecord[] = filterRecordsByDateRange(
     entries,
     startDate,
     endDate
   );
   const hasEntries = filteredEntries.length > 0;
   const showDateRangeFilter = startDate && endDate && startDate <= endDate;
-  console.log("Show date range filter:", showDateRangeFilter);
-  console.log("Has entries:", hasEntries);
+  // console.log("Show date range filter:", showDateRangeFilter);
+  // console.log("Has entries:", hasEntries);
   const handleReset = () => {
     setStartDate(undefined);
     setEndDate(undefined);
     // setEntries([]);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+        <span className="ml-2 text-gray-600">Checking authentication...</span>
+      </div>
+    );
+  }
   if (!student) return null;
 
   return (
@@ -119,7 +133,7 @@ const DashboardPage = () => {
           {error}
         </div>
       )}
-      {isLoading && (
+      {attendanceLoading && (
         <div className="flex justify-center items-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
           <span className="ml-2 text-gray-600">
@@ -127,7 +141,7 @@ const DashboardPage = () => {
           </span>
         </div>
       )}
-      {!isLoading && (
+      {!attendanceLoading && (
         <>
           {showDateRangeFilter && hasEntries ? (
             <div className="flex flex-col items-center w-full">
@@ -145,17 +159,17 @@ const DashboardPage = () => {
               </div>
               <Button
                 variant="destructive"
-                className="mt-4 w-48 h-12 text-base bg-green-500 hover:bg-green-600"
+                className="mt-4 mb-12 w-48 h-12 text-base bg-green-500 hover:bg-green-600"
                 onClick={handleReset}
                 type="button"
               >
                 Reset Calendars
               </Button>
               <div className="w-full overflow-x-auto">
-                <h3 className="text-xl font-semibold text-center mb-4 text-gray-700">
-                  All Attendance Records
+                <h3 className="text-xl font-semibold text-center mb-4 text-gray-700 mt-7">
+                  Selected Attendance Records
                 </h3>
-                <TableDisplay records={entries} />
+                <TableDisplay records={filteredEntries} />
               </div>
             </div>
           ) : showDateRangeFilter && !hasEntries ? (
@@ -174,7 +188,7 @@ const DashboardPage = () => {
               </div>
               <Button
                 variant="destructive"
-                className="mt-4 w-48 h-12 text-base bg-green-500 hover:bg-green-600"
+                className="mt-4 mb-12 w-48 h-12 text-base bg-green-500 hover:bg-green-600"
                 onClick={handleReset}
                 type="button"
               >
@@ -191,7 +205,7 @@ const DashboardPage = () => {
                   <h3 className="text-xl font-semibold text-center mb-4 text-gray-700 mt-7">
                     All Attendance Records
                   </h3>
-                  <TableDisplay records={entries} />
+                  <TableDisplay records={filteredEntries} />
                 </div>
               )}
             </div>

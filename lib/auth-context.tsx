@@ -22,13 +22,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Check for existing session on mount
   useEffect(() => {
     const savedStudent = Cookies.get('attentigo_student');
-    if (savedStudent) {
-      try {
-        setStudent(JSON.parse(savedStudent));
-      } catch (error) {
-        console.error('Failed to parse saved student data:', error);
-        Cookies.remove('attentigo_student');
-      }
+    if (!savedStudent) {
+      setIsLoading(false);
+      return;
+    }
+    try {
+      setStudent(JSON.parse(savedStudent));
+    } catch (error) {
+      console.error('Failed to parse saved student data:', error);
+      Cookies.remove('attentigo_student');
     }
     setIsLoading(false);
   }, []);

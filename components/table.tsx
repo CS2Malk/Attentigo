@@ -22,15 +22,6 @@ export type TableDisplayProps = {
 
 
 
-function isWithinRangeAndWeekday(dateStr: string, start?: Date, end?: Date) {
-  const d = new Date(dateStr);
-  if (start && d < start) return false;
-  if (end && d > end) return false;
-  // 0 = Sunday, 6 = Saturday
-  if (d.getDay() === 0 || d.getDay() === 6) return false;
-  return true;
-}
-
 export default function TableDisplay({ startDate, endDate, records = [] }: TableDisplayProps) {
   // const filtered = records.filter((r) => isWithinRangeAndWeekday(r.date, startDate, endDate));
   const getDayName = (dateStr: string) => {
@@ -39,7 +30,6 @@ export default function TableDisplay({ startDate, endDate, records = [] }: Table
   };
   return (
     <Table>
-      <TableCaption>A list of attendance records.</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>Date</TableHead>
