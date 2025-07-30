@@ -9,6 +9,7 @@ import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
 import { Button } from "./ui/button";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
+import NavbarDropdown from "@/components/dropdown";
 
 const Navbar = () => {
   const { student, logout } = useAuth() as { student: any; logout: () => void };
@@ -31,14 +32,14 @@ const Navbar = () => {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center space-x-8">
-            {NavItems.map((item, index) => (
-              <a
+            {NavItems.slice(0, 2).map((item, index) => (
+              <Link
                 key={index}
                 href={item.href}
                 className="text-gray-700 hover:text-green-600 transition-colors"
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
             
             {/* Student Info and Logout */}
@@ -57,6 +58,7 @@ const Navbar = () => {
                   <LogOut className="h-4 w-4" />
                   <span>Logout</span>
                 </Button>
+                <NavbarDropdown></NavbarDropdown>
               </div>
             )}
           </nav>
@@ -90,13 +92,13 @@ const Navbar = () => {
                     </div>
                   )}
                   {NavItems.map((item, index) => (
-                    <a
+                    <Link
                       key={index}
                       href={item.href}
                       className="text-gray-700 hover:text-green-600 transition-colors text-lg"
                     >
                       {item.name}
-                    </a>
+                    </Link>
                   ))}
                 </nav>
               </SheetContent>

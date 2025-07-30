@@ -4,7 +4,8 @@ export const Title = {
 
 export const NavItems = [
   { name: 'How to Use', href: '/how-to-use'},
-  { name: 'Contact', href: '/contact'}
+  { name: 'Contact', href: '/contact'},
+  { name: 'Reset Password', href: '/reset-password' },
 ]
 
 export const HeroSection = {

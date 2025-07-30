@@ -122,7 +122,7 @@ const DashboardPage = () => {
     <div className="pt-15 pb-20 w-full max-w-5xl mx-auto px-2">
       <div className="mb-8 flex justify-center">
         <Link href="/mark-attendance">
-          <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold flex items-center space-x-2 shadow-lg">
+          <Button className="bg-green-600 hover:cursor-pointer hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold flex items-center space-x-2 shadow-lg">
             <CheckCircle className="h-5 w-5" />
             <span>{`Mark Today's Attendance`}</span>
           </Button>
