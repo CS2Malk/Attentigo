@@ -14,6 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import React from "react";
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -36,10 +39,19 @@ export default function ResetPasswordPage() {
     },
   });
 
+  const { student, isLoading } = useAuth();
+  const router = useRouter();
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Handle password reset logic here (e.g., call API)
     console.log(values);
   }
+
+  React.useEffect(() => {
+    if (!isLoading && !student) {
+      router.replace("/");
+    }
+  }, [student, isLoading, router]);
 
   return (
     <div className="flex justify-center items-center py-20 bg-transparent">
