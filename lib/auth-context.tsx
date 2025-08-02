@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { authenticateStudent } from '@/lib/strapi';
+import { debug } from 'console';
 
 interface AuthContextType {
   student: null;
@@ -21,6 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Check for existing session on mount
   useEffect(() => {
+    debugger;
     const savedStudent = Cookies.get('attentigo_student');
     if (!savedStudent) {
       setIsLoading(false);

@@ -143,3 +143,43 @@ export async function getStudentSchool(studentId: number): Promise<any | null> {
     throw new Error('Failed to fetch student school data');
   }
 } 
+
+export async function verifyCurrentPassword(currentPassword: string, studentId: number): Promise<boolean> {
+  try {
+    const student = await getStudentById(studentId);
+    debugger;
+    if (!student) {
+      return false; // Student not found
+    }
+
+    // Compare the provided password with the stored password
+    const isPasswordValid = student.Password.toLowerCase() === currentPassword.toLowerCase();
+    return isPasswordValid;
+  }
+  catch (error) {
+    console.error('Failed to verify current password:', error);
+    throw new Error('Failed to verify current password');
+  }
+}
+
+export async function updateStudentPassword(newPassword: string, studentId: number): Promise<any> {
+  try {
+    const student = await getStudentById(studentId);
+    if (!student || !newPassword) {
+      return false; // Student not found
+  }
+    const response = await strapiRequest<any>(`/api/students/${studentId}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        data: {
+          Password: newPassword,
+        },
+      }),
+    });
+    return response.data;
+  }
+  catch (error) {
+    console.error('Failed to update student password:', error);
+    throw new Error('Failed to update student password');
+  }
+}
