@@ -65,7 +65,7 @@ export default function ResetPasswordPage() {
       const isCurrentPasswordValid = await verifyCurrentPassword(
         values.currentPassword,
         // @ts-ignore
-        student?.id
+        student?.documentId
       );
       if (!isCurrentPasswordValid) {
         setError("Invalid current password");
@@ -73,7 +73,7 @@ export default function ResetPasswordPage() {
         return;
       }
       // @ts-ignore
-      await updateStudentPassword(values.newPassword, student?.id);
+      await updateStudentPassword(values.newPassword, student?.documentId);
       setSuccess(true);
       setTimeout(() => {
         logout();
